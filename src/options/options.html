@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Poker Advisor – Settings</title>
+  <link rel="stylesheet" href="../ui/pages.css">
+  <style>
+    body { padding: 24px; max-width: 1020px; margin: 0 auto; }
+    .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 760px) { .cols { grid-template-columns: 1fr; } }
+    textarea { width: 100%; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+    #players td textarea { min-height: 34px; font-family: inherit; }
+    #search { width: 220px; }
+    .stats { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <h1>&spades; Poker <b>Advisor</b> <span class="muted" style="font-weight:400;font-size:13px">settings &amp; player database</span></h1>
+
+  <div class="cols">
+    <div>
+      <h2>Strategy</h2>
+      <div class="card">
+        <label><span>Playing style</span><select id="style"><option value="tight">Tight</option><option value="balanced">Balanced</option><option value="aggressive">Aggressive</option></select></label>
+        <label><span>Bluffing frequency <small>0 = never bluff, 100 = bluff a lot</small></span><input type="range" id="bluff" min="0" max="100" step="5"></label>
+        <label><span>Stack protection <small>higher = needs stronger hands to risk big parts of your stack</small></span><input type="range" id="safety" min="0" max="100" step="5"></label>
+        <label><span>Assumed VPIP of unknown players <small>low stakes default 38%</small></span><input type="number" id="defaultVpip" min="5" max="90" style="width:70px"></label>
+        <label><span>Assumed PFR of unknown players</span><input type="number" id="defaultPfr" min="2" max="60" style="width:70px"></label>
+      </div>
+      <h2>Display</h2>
+      <div class="card">
+        <label><span>Highlight where to click</span><input type="checkbox" id="highlight"></label>
+        <label><span>Show reasons for each move</span><input type="checkbox" id="showReasons"></label>
+        <label><span>Show player HUD</span><input type="checkbox" id="showHud"></label>
+        <label><span>Your player name <small>used to find your seat</small></span><input type="text" id="heroName"></label>
+        <label><span>Big blind override <small>0 = auto-detect</small></span><input type="number" id="bigBlindOverride" min="0" step="any" style="width:90px"></label>
+      </div>
+    </div>
+    <div>
+      <h2>Bankroll &amp; session discipline</h2>
+      <div class="card">
+        <label><span>Stop-loss <small>warn when down this many buy-ins (0 = off)</small></span><input type="number" id="stopLossBuyins" min="0" step="0.5" style="width:70px"></label>
+        <label><span>Win goal <small>suggest leaving when up this many buy-ins (0 = off)</small></span><input type="number" id="stopWinBuyins" min="0" step="0.5" style="width:70px"></label>
+        <label><span>Break reminder <small>minutes (0 = off)</small></span><input type="number" id="breakReminderMin" min="0" step="5" style="width:70px"></label>
+      </div>
+      <h2>Session history</h2>
+      <div class="card" id="sessions"></div>
+    </div>
+  </div>
+
+  <h2>Players <span class="muted" style="text-transform:none;letter-spacing:0" id="pcount"></span></h2>
+  <div class="row" style="margin-bottom:8px">
+    <input type="text" id="search" placeholder="Search name or note…">
+    <button id="export" class="sec">Export JSON</button>
+    <button id="importBtn" class="sec">Import JSON</button>
+    <input type="file" id="importFile" accept="application/json" hidden>
+    <button id="clear" class="danger">Delete all players</button>
+  </div>
+  <div class="card" style="padding:0;overflow:auto">
+    <table id="players"><thead><tr><th>Player</th><th>Type</th><th>Stats</th><th>Notes</th><th></th></tr></thead><tbody></tbody></table>
+  </div>
+
+  <h2>Custom table selectors (advanced)</h2>
+  <div class="card">
+    <p class="muted" style="margin-top:0">If a site's layout isn't read correctly (check <b>Diagnostics</b> in the panel), map CSS selectors per hostname. Keys:
+      <code>player, playerName, playerStack, playerBet, playerCards, card, heroCards, board, pot, blinds, dealer, betInput, betConfirm, foldButton, checkButton, callButton, raiseButton, betButton, allinButton</code>.
+      Use <code>"*"</code> as hostname for all sites.</p>
+    <textarea id="selectors" rows="9" spellcheck="false"></textarea>
+    <div class="row" style="margin-top:8px"><button id="saveSel">Save selectors</button><span id="selMsg" class="muted"></span></div>
+  </div>
+
+  <script src="../core/cards.js"></script>
+  <script src="../core/profiles.js"></script>
+  <script src="../core/sizing.js"></script>
+  <script src="../storage.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

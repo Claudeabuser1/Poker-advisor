@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>PokerNow fixture</title>
+<style>
+  body { margin: 0; background: #0b3d2a; font-family: Arial, sans-serif; color: #fff; width: 1280px; height: 800px; position: relative; overflow: hidden; }
+  .table { position: absolute; left: 140px; top: 90px; width: 1000px; height: 520px; border-radius: 260px; background: #146b45; border: 14px solid #5a3a1c; }
+  .table-player { position: absolute; width: 150px; padding: 8px; background: rgba(0,0,0,.55); border-radius: 10px; text-align: center; }
+  .table-player.fold { opacity: .4; }
+  .table-player.decision-current { box-shadow: 0 0 0 3px #ffd34d; }
+  .table-player-1 { left: 565px; top: 620px; } .table-player-2 { left: 40px; top: 330px; }
+  .table-player-3 { left: 565px; top: 20px; } .table-player-4 { left: 1090px; top: 330px; }
+  .table-player-bet-value { color: #ffd34d; font-weight: bold; margin-top: 4px; }
+  .card { display: inline-block; width: 34px; height: 48px; background: #fff; color: #000; border-radius: 4px; margin: 2px; font-weight: bold; line-height: 22px; }
+  .card.flipped { background: #a33; }
+  .table-cards { position: absolute; left: 500px; top: 300px; } .table-pot-size { position: absolute; left: 600px; top: 250px; }
+  .dealer-button-ctn { position: absolute; width: 22px; height: 22px; border-radius: 11px; background: #fff; color: #000; text-align: center; }
+  .dealer-position-3 { left: 680px; top: 140px; } .dealer-position-1 { left: 680px; top: 590px; }
+  .blind-value-ctn { position: absolute; left: 10px; top: 10px; }
+  .action-buttons { position: absolute; left: 380px; top: 720px; }
+  .action-buttons button { font-size: 18px; padding: 12px 22px; margin: 0 8px; border-radius: 8px; border: 0; cursor: pointer; }
+  .raise-controller-form { position: absolute; left: 820px; top: 640px; background: #222; padding: 10px; border-radius: 8px; display: none; }
+  .raise-controller-form.open { display: block; }
+</style>
+</head>
+<body>
+<div class="blind-value-ctn"><span class="chips-value">1 / 2</span></div>
+<div class="table">
+  <div class="table-pot-size"><span class="chips-value main-value">0</span></div>
+  <div class="table-cards"></div>
+</div>
+<div class="dealer-button-ctn dealer-position-3">D</div>
+<div id="players"></div>
+<div class="action-buttons"></div>
+<form class="raise-controller-form" onsubmit="return false"><div class="value-input-ctn"><input type="number" value="0"></div><input type="submit" value="Raise"></form>
+<script>
+  // Minimal table driver used by tests/e2e.js
+  window.T = {
+    card(c, hidden) {
+      if (hidden) return '<div class="card-container"><div class="card flipped"></div></div>';
+      return '<div class="card-container"><div class="card"><span class="value">' + c[0].replace('T', '10') + '</span><span class="suit">' + c[1] + '</span></div></div>';
+    },
+    render(s) {
+      document.getElementById('players').innerHTML = s.players.map((p, i) =>
+        '<div class="table-player table-player-' + p.seat + (p.you ? ' you-player' : '') + (p.fold ? ' fold' : '') + (p.turn ? ' decision-current' : '') + '">' +
+        '<div class="table-player-name"><a>' + p.name + '</a></div>' +
+        '<div class="table-player-stack"><span class="chips-value">' + p.stack + '</span></div>' +
+        '<div class="table-player-cards">' + (p.cards ? p.cards.map((c) => T.card(c)).join('') : (p.fold ? '' : T.card('', true) + T.card('', true))) + '</div>' +
+        (p.bet ? '<div class="table-player-bet-value"><span class="chips-value">' + p.bet + '</span></div>' : '') +
+        '</div>').join('');
+      document.querySelector('.table-cards').innerHTML = (s.board || []).map((c) => T.card(c)).join('');
+      document.querySelector('.table-pot-size .chips-value').textContent = s.pot || 0;
+      document.querySelector('.dealer-button-ctn').className = 'dealer-button-ctn dealer-position-' + s.dealer;
+      const btns = s.buttons || [];
+      document.querySelector('.action-buttons').innerHTML = btns.map((b) => '<button class="' + b.toLowerCase().split(' ')[0] + '">' + b + '</button>').join('');
+      document.querySelector('.raise-controller-form').classList.toggle('open', !!s.raiseOpen);
+    }
+  };
+</script>
+</body>
+</html>

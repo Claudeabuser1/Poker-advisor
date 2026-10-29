@@ -1,0 +1,12 @@
+{
+  "name": "poker-advisor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Chrome extension: low-stakes poker strategy advice, player tracking and click highlighting.",
+  "scripts": {
+    "test": "node --test tests/core.test.js",
+    "test:e2e": "node tests/e2e.js",
+    "rankings": "node tools/generate-rankings.js 30000"
+  },
+  "license": "MIT"
+}
